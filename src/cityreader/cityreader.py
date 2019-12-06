@@ -38,7 +38,7 @@ def cityreader(cities=[]):
         cities_parsed = csv.reader(csvfile)
         next(cities_parsed) # will skip the first line (header)
         for city in cities_parsed:
-            cities.append(City(city[0], city[3], city[4]))
+            cities.append(City(city[0], float(city[3]), float(city[4])))
 
     return cities
 

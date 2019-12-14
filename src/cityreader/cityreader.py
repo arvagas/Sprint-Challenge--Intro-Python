@@ -1,6 +1,16 @@
+import csv
+# Import since windows doesn't want to read the csv file in the folder directly
+import os
+
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
-
+class City:
+    def __init__(self, name, lat, lon):
+        self.name = name
+        self.lat = lat
+        self.lon = lon
+    def __str__(self):
+        return f'{self.name}, {self.lat}, {self.lon}'
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -16,11 +26,20 @@
 # should not be loaded into a City object.
 cities = []
 
+cwd = os.getcwd()
+path_to = cwd + '\src\cityreader'
+
 def cityreader(cities=[]):
-  # TODO Implement the functionality to read from the 'cities.csv' file
-  # For each city record, create a new City instance and add it to the 
-  # `cities` list
-    
+    # TODO Implement the functionality to read from the 'cities.csv' file
+    # For each city record, create a new City instance and add it to the 
+    # `cities` list
+
+    with open(path_to + '\cities.csv') as csvfile:
+        cities_parsed = csv.reader(csvfile)
+        next(cities_parsed) # will skip the first line (header)
+        for city in cities_parsed:
+            cities.append(City(city[0], float(city[3]), float(city[4])))
+
     return cities
 
 cityreader(cities)
@@ -58,14 +77,48 @@ for c in cities:
 # Tucson: (32.1558,-110.8777)
 # Salt Lake City: (40.7774,-111.9301)
 
-# TODO Get latitude and longitude values from the user
+# # TODO Get latitude and longitude values from the user
+print('==================== Stretch Starts Here ====================')
+
+ui1 = input('Enter lat1,lon1: ')
+ui2 = input('Enter lat2,lon2: ')
+set_one = ui1.split(',')
+set_two = ui2.split(',')
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
-  # within will hold the cities that fall within the specified region
-  within = []
+    # within will hold the cities that fall within the specified region
+    within = []
 
-  # TODO Ensure that the lat and lon valuse are all floats
-  # Go through each city and check to see if it falls within 
-  # the specified coordinates.
+    # TODO Ensure that the lat and lon valuse are all floats
+    # Go through each city and check to see if it falls within 
+    # the specified coordinates.
+    
+    # normalize latitude
+    if lat1 < lat2:
+        start_lat = float(lat1)
+        end_lat = float(lat2)
+    else:
+        start_lat = float(lat2)
+        end_lat = float(lat1)
 
-  return within
+    # normalize longitude
+    if lon1 < lon2:
+        start_lon = float(lon1)
+        end_lon = float(lon2)
+    else:
+        start_lon = float(lon2)
+        end_lon = float(lon1)
+
+    for city in cities:
+        if city.lat > start_lat \
+            and city.lat < end_lat \
+            and city.lon < start_lon \
+            and city.lon > end_lon:
+            within.append(city)
+
+    return within
+
+stretch_ans = cityreader_stretch(set_one[0], set_one[1], set_two[0], set_two[1], cities)
+print('======================== Calculating ========================')
+for i in stretch_ans:
+    print(i)
